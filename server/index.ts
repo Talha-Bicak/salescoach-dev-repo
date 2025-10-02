@@ -8,7 +8,12 @@ import { getCustomerSystemPrompt } from './customer-profile';
 
 const app = express();
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set. This is required for secure authentication.');
+  process.exit(1);
+}
 
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());

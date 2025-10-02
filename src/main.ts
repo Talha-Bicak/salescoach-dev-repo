@@ -75,8 +75,7 @@ session: {
 turn_detection: { type: "server_vad", threshold: 0.8, silence_duration_ms: 900 },
 input_audio_transcription: 
 {
-    model: "gpt-4o-transcribe",
-    language: "tr"
+    model: "whisper-1"
   },
 }
 };

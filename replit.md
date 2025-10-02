@@ -61,6 +61,18 @@ This is a comprehensive sales training platform using Azure OpenAI's Realtime AP
 - `attached_assets/Book(Sayfa1)_1759420297416.csv` - Customer profile data source
 
 ## Development
+
+### On Replit
+The application is fully configured and ready to run on Replit:
+1. Dependencies are already installed
+2. Prisma client is generated automatically
+3. Database is initialized (SQLite with Prisma)
+4. JWT_SECRET is configured in the workflow
+5. Workflow runs both backend and frontend with: `npm run dev`
+   - Backend runs on http://localhost:3000
+   - Frontend runs on http://0.0.0.0:5000 (accessible via Replit's webview)
+
+### Local Development
 1. Install dependencies: `npm install`
 2. Generate Prisma client: `npx prisma generate`
 3. Push database schema: `npx prisma db push`
@@ -73,6 +85,14 @@ This is a comprehensive sales training platform using Azure OpenAI's Realtime AP
    - Frontend runs on http://localhost:5000
 
 **Note**: JWT_SECRET is REQUIRED. The backend will fail to start without it. Use a strong, random secret in production.
+
+### Azure OpenAI Configuration
+To use the real-time voice features, you need to configure Azure OpenAI credentials:
+1. You'll need an Azure OpenAI endpoint with Realtime API access
+2. Set the following when starting a conversation:
+   - AZURE_OPENAI_ENDPOINT
+   - AZURE_OPENAI_API_KEY
+   - AZURE_OPENAI_DEPLOYMENT_NAME (e.g., "gpt-4o-realtime-preview")
 
 ## User Roles
 

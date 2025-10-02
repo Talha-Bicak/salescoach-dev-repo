@@ -1,0 +1,60 @@
+﻿;Firma Kartı;2.Case
+Firma Künyesi;"Firma Profili
+1) ..... Firmasıyla mı görüşüyorum?";Sağlam İnşaat Taahhüt LTD
+;"Firma VD
+Şirket Vergi Numaranızı öğrenebilir miyim?";XYZ Vergi Dairesi:1234567890
+;"Firma _ e-mail
+1)Teklif gönderimi yapmamızı istediğiniz e-mail adresinizi öğrenebilir miyim?";saglaminsaat@kmail.com
+Firma  Analizi;Firma Yetkili Profili;İK Müdürü- Tansu Tan
+;"İşe Alım Sürecini Kim Yürütüyor?
+1) İşe alım süreçlerini/ personel alım süreçlerini siz mi yönetiyorsunuz? 
+2) İşe alım / personel alım süreçleriyle ilgilenen yetkili kişinin  ismini öğrenebilir miyim?";İK Müdürü- Tansu Tan
+;"Karar verici kim?
+Firmanızda işe alım kararlarını siz mi veriyorsunuz?";İK Müdürü- Tansu Tan
+;"IK Departmanı var mı? 
+ 1) Firmanızda insan kaynakları departmanınız var mı?
+2) IK süreçlerinizi nasıl yürütüyorsunuz?";Evet
+;"Çalışan sayısı & Kritik pozisyonlar
+ 1)Firmanızdaki güncel personel sayınızı öğrenebilir miyim?
+ 2) Firmanızdaki çalışan sayısını öğrenebilir miyim?
+3) Firmanız için kritik pozisyonlar nelerdir?";150
+;"Sirkülasyon Oranı/ Turnover/ İşe Alım Sıklığı
+ 1)Yıl içinde kaç defa personel alımı yapıyorsunuz?
+ 2) Firmanızda personel işe alım sıklığı ne kadar oluyor?
+ 3) Firmanızın sirkülasyon oranı/Turnover nedir?
+4) Yılda en fazla kaç kez personel değişikliği yaşıyorsunuz?
+";Yılda 20 kişi 
+İhtiyaç Analizi;IKÇO _ İhtiyaç Analizi Sorusu 1;Şu anda personel ihtiyacınız /İşe alım planlamanız var mı?
+;Firma  İhtiyaç AnaliziCevabı 1;"İhtiyacımız Yok 
+(Aslında bu ay başında Linkedin -  İstanbul Asya- İnşaat Mühendisi ilanınız var IKÇO'dan bu pozisyon için k.net uygun aday sayısı ve ürün önerisi vermesini bekle)"
+;IKÇO _ İhtiyaç Analizi Sorusu 2;Önümüzdeki dönemde / Bu yıl sonuna kadar personel ihtiyacınız/ işe alım planlamınız var mı?
+;Firma  İhtiyaç AnaliziCevabı 2;Ocak ayında 5 saha satış, 2 idari personel
+;IKÇO _ İhtiyaç Analizi Sorusu 3;"1)Bir yıl içinde personel ihtiyacınız olur mu? 
+2) Önümüzdeki yıl işe alım planlamanız olur mu? 
+3 ) Önümüzdeki yıl hangi pozisyonlar için personel ihtiyacınız oluşabilir?"
+;Firma  İhtiyaç AnaliziCevabı 3;Büyüme planınız kasım ayında belli olacak
+İşe Alım Süreci ve Yöntemler;"İşe Alım Sürecinde Kullanılan Yöntemler
+  1) İşe alım süreçlerinizi nasıl yönetiyorsunuz?
+ 2)İşe alım süreçlerinde kullandığınız yöntemler nelerdir?
+ 3)) Personel  alımlarınızı nasıl yapıyorsunuz?
+4) Bu işe alım yöntemlerini kullanırken  başka nelere ihtiyaç duyuyorsunuz? 
+5) Bu işe alım yöntemleri beklenti ve ihtiyaçlarınızı nasıl karşılıyor?";Linkedin,Eleman.net, Secret CV
+;"Mülakat  süreçleri
+1) İhtiyaç duyulan pozisyon için adaylarla görüşmeleri nasıl yapıyorsunuz?
+2) Mülakat süreçlerinizi nasıl yönetiyorsunuz?
+3)  Mülakat süreçlerinizde en fazla destek almak istediğiniz bölüm ne oluyor?
+";Sen
+;"Yetkinlik Testleri
+1) Adaylar için hangi yetkinlik testlerini uyguluyorsunuz?
+2) Bu pozisyon/pozisyonlar için  yetkinlik testlerini kim yapıyor?";Mülakatta ölçümleyeceğiz.
+;"İşe Alım Sürecinde Firmanın Beklenti ve Öncelikleri
+1) İşe Alım Süreçlerindeki beklenti ve öncelikleriniz öğrenebilir miyim?
+2) Bu işe alım sürecinde üzerinizdeki hangi iş yükünü bize devretmek istersiniz? En çok zamanınızı alan süreç hangisi acaba?";"1)Uygun fiyatla ilan çıkabilmek.
+2) Nitelikli başvuru alabilmek,uygun olmayan aday başvuruları süreci yavaşlatıyor.
+3) Hızlı sonuç alabilmek"
+;İşe alım sürecinde evrak doğrulama süreci nasıl yönetiliyor?;IK personeli manuel
+İtirazlar;; Başka firmaların ürünlerini de değerlendireceğiz, sizin avantajlarınız nedir?
+;İtiraz kategorileri;"1) Fiyat
+2) Ücretsiz platform kıyası, kariyer.net farkı"
+Teklif Gönderimi Cevabı;;Gönderin inceleyelim
+Ürün Önerisi:;;Süper İlan, Finalcheck,Değerlendirme Testi

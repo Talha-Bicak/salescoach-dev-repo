@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(IKCO)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions    Session[]
+  evaluations Evaluation[]
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  startedAt        DateTime @default(now())
+  endedAt          DateTime?
+  customerProfile  String   @default("default")
+  
+  transcripts      Transcript[]
+  evaluations      Evaluation[]
+
+  @@index([userId])
+}
+
+model Transcript {
+  id         String   @id @default(uuid())
+  sessionId  String
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  speaker    String
+  text       String
+  timestamp  DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model Evaluation {
+  id        String   @id @default(uuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  result    String
+  score     Float?
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([userId])
+}
+
+enum Role {
+  IKCO
+  TEAM_LEAD
+}

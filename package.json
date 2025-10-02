@@ -19,7 +19,19 @@
   "dependencies": {
     "@azure/identity": "^4.4.1",
     "@azure/openai": "^2.0.0",
+    "@prisma/client": "^6.16.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "openai": "^4.95.1",
+    "prisma": "^6.16.3",
     "rt-client": "https://github.com/Azure-Samples/aoai-realtime-audio-sdk/releases/download/js/v0.5.0/rt-client-0.5.0.tgz"
   },
   "files": [

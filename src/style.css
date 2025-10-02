@@ -1,0 +1,805 @@
+/* style.css - Koyu Tema Revizyonu */
+:root {
+  /* Koyu Tema Renkleri (GÃ¶rselden EsinlenilmiÅŸ) */
+  --primary-color: #6366F1; /* Indigo 500 - Koyu temada daha belirgin */
+  --primary-hover: #4F46E5; /* Indigo 600 */
+  --primary-focus: rgba(99, 102, 241, 0.3); /* Indigo 500 with opacity */
+  --secondary-color: #9CA3AF; /* Gray 400 - AÃ§Ä±k gri ikincil */
+  --secondary-hover: #6B7280; /* Gray 500 */
+  --secondary-focus: rgba(156, 163, 175, 0.3); /* Gray 400 with opacity */
+  --success-color: #10b981; /* Emerald 500 */
+  --success-hover: #059669; /* Emerald 600 */
+  --success-focus: rgba(16, 185, 129, 0.25);
+  --danger-color: #ef4444; /* Red 500 */
+  --danger-hover: #dc2626; /* Red 600 */
+  --danger-focus: rgba(239, 68, 68, 0.25);
+  --warning-color: #f59e0b; /* Amber 500 */
+  --warning-hover: #d97706; /* Amber 600 */
+  --warning-focus: rgba(245, 158, 11, 0.25);
+  --info-color: #38bdf8; /* Sky 400 - Koyu temada daha canlÄ± */
+  --info-hover: #0ea5e9; /* Sky 500 */
+  --info-focus: rgba(56, 189, 248, 0.25);
+
+  /* Ana Tema Renkleri (Koyu Tema) */
+  --background-color: #222222; /* Ana Koyu Arka Plan (GÃ¶rseldeki gibi) */
+  --container-bg: #2A2A2A; /* Konteyner / Ä°Ã§erik AlanÄ± Arka PlanÄ± */
+  --light-color: #333333; /* Daha AÃ§Ä±k Koyu Gri (Sidebar, BaÅŸlÄ±klar vb.) */
+  --dark-color: #F5F5F5; /* AÃ§Ä±k Metin Rengi (Koyu arka plan Ã¼stÃ¼ iÃ§in) */
+  --text-color: #E0E0E0; /* Ana Metin Rengi (Hafif kÄ±rÄ±k beyaz) */
+  --border-color: #444444; /* Koyu Tema iÃ§in SÄ±nÄ±r Rengi */
+  --input-bg: #383838; /* Input AlanÄ± Arka PlanÄ± */
+  --input-text: #E0E0E0; /* Input AlanÄ± Metin Rengi */
+  --placeholder-text: #888888; /* Placeholder Metin Rengi */
+  --disabled-bg: #404040; /* Devre DÄ±ÅŸÄ± Buton Arka PlanÄ± */
+  --disabled-text: #777777; /* Devre DÄ±ÅŸÄ± Buton Metin Rengi */
+  --modal-bg: #333333; /* Modal Arka PlanÄ± */
+  --code-bg: #444444; /* Kod BloÄŸu Arka PlanÄ± */
+  --code-text: #f87171; /* Kod BloÄŸu Metin Rengi (AÃ§Ä±k KÄ±rmÄ±zÄ±msÄ±) */
+  --error-bg: #5A2222; /* Hata BloÄŸu Arka PlanÄ± */
+  --error-text: #FECACA; /* Hata BloÄŸu Metin Rengi */
+  --error-border: #7f1d1d; /* Hata BloÄŸu SÄ±nÄ±r Rengi */
+  --user-message-bg: #4F46E5; /* KullanÄ±cÄ± Mesaj Balonu (Primary Hover gibi) */
+  --ai-message-bg: #383838; /* AI Mesaj Balonu */
+
+  /* GÃ¶lgeler (Koyu temada daha az belirgin olabilir veya ayarlanabilir) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1); /* HafifÃ§e ayarlandÄ± */
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1); /* HafifÃ§e ayarlandÄ± */
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* HafifÃ§e ayarlandÄ± */
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1); /* HafifÃ§e ayarlandÄ± */
+  --transition: all 0.2s ease-in-out;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 16px;
+  line-height: 1.5;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  height: 100%;
+}
+.wave {
+  position: absolute;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  animation: waveAnim 2s infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes waveAnim {
+  0% {
+      width: 0px;
+      height: 0px;
+      opacity: 0.8;
+  }
+  100% {
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+  }
+}
+
+/* Pulse animation for ringing effect */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.ringing {
+  animation: pulse 1s infinite;
+}
+form {
+  display: flex;
+  flex: 1;
+  padding: 1rem; /* Kenar boÅŸluÄŸunu koruyalÄ±m */
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: var(--container-bg); /* Koyu konteyner */
+  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Sol Panel: GÃ¶rselleÅŸtirme ve Kamera */
+.visualization-panel {
+  width: 260px;
+  padding: 1.25rem;
+  background-color: #000000; /* AÃ§Ä±k Koyu Gri */
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.visualizer-container,
+.camera-container {
+  background-color: var(--container-bg); /* Ä°Ã§erik alanÄ± koyu */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.visualizer-container:hover,
+.camera-container:hover {
+  box-shadow: var(--shadow);
+  border-color: #555; /* Hover'da sÄ±nÄ±rÄ± hafif belirginleÅŸtir */
+}
+
+.visualizer-container label,
+.camera-container label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text-color); /* AÃ§Ä±k metin */
+  text-align: center;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.visualizer-container canvas {
+  display: block;
+  width: 100%;
+  height: 120px;
+  background-color: #111; /* Daha koyu canvas arka planÄ± */
+  border-radius: 8px;
+}
+
+.camera-container video {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  background-color: #111; /* Koyu video arka planÄ± */
+  border-radius: 8px;
+  transform: scaleX(-1);
+}
+
+.status-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.7em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: white; /* Genellikle beyaz iyi Ã§alÄ±ÅŸÄ±r */
+  font-weight: 500;
+  transition: var(--transition);
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Status renkleri genelde koyu temada da Ã§alÄ±ÅŸÄ±r, gerekirse ayarlanabilir */
+.status-indicator.off { background-color: var(--secondary-hover); } /* Daha belirgin */
+.status-indicator.active { background-color: var(--success-color); }
+.status-indicator.listening { background-color: var(--info-color); }
+.status-indicator.speaking { background-color: var(--danger-color); }
+.status-indicator.processing { background-color: var(--warning-color); color: #111; } /* UyarÄ±da koyu metin */
+.status-indicator.error { background-color: var(--danger-color); }
+
+/* Orta Panel: KonuÅŸma Metni */
+#received-text-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: var(--container-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: -50px; /* Negatif margin ekleyerek yukarÄ± taÅŸÄ±yoruz */
+}
+
+#received-text-container p {
+  margin: 0;
+  padding: 12px 18px;
+  border-radius: 18px;
+  max-width: 75%;
+  line-height: 1.6;
+  word-wrap: break-word;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.transcript-hidden p {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.3s, opacity 0.3s linear;
+}
+
+#ringBox {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 130px);
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    pointer-events: none;
+    display: none; /* Varsayılan olarak gizli */
+}
+#received-text-container p:hover {
+  box-shadow: var(--shadow);
+}
+
+#received-text-container p:first-child {
+  margin-top: 0;
+}
+
+#received-text-container p[data-sender="user"] {
+  background-color: var(--user-message-bg); /* KullanÄ±cÄ± mesaj rengi */
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 5px;
+}
+
+#received-text-container p[data-sender="ai"] {
+  background-color: var(--ai-message-bg); /* AI mesaj rengi */
+  color: var(--text-color); /* AÃ§Ä±k metin */
+  align-self: flex-start;
+  border-bottom-left-radius: 5px;
+}
+
+#received-text-container p[data-sender="system"] {
+  font-style: italic;
+  color: var(--secondary-color); /* AÃ§Ä±k gri */
+  align-self: center;
+  font-size: 0.85em;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 5px 0;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.transcript-hidden p {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.3s, opacity 0.3s linear;
+}
+
+/* SaÄŸ Panel: Ayarlar */
+.controls {
+  position: fixed;
+  right: -340px; /* GeniÅŸlik deÄŸiÅŸirse burayÄ± da ayarla */
+  top: 0;
+  width: 320px;
+  height: 100vh;
+  background-color: var(--light-color); /* AÃ§Ä±k koyu gri */
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2); /* Koyu tema gÃ¶lgesi */
+  padding: 1.25rem 1.5rem;
+  transition: right 0.35s ease-in-out;
+  overflow-y: auto;
+  z-index: 100;
+  border-left: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.controls.visible {
+  right: 0;
+}
+
+.controls h3 {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color); /* AÃ§Ä±k metin */
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.8rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.input-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.85em;
+  color: var(--dark-color); /* AÃ§Ä±k metin */
+}
+
+.input-group small {
+  font-size: 0.75em;
+  color: var(--secondary-color); /* AÃ§Ä±k gri */
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"],
+.input-group input[type="number"],
+.input-group textarea,
+.input-group select {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 0.75em 1em;
+  font-size: 0.95em;
+  font-weight: 400;
+  font-family: inherit;
+  background-color: var(--input-bg); /* Koyu input arka planÄ± */
+  color: var(--input-text); /* AÃ§Ä±k input metni */
+  margin-bottom: 0.5rem;
+  transition: var(--transition);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+  color: var(--placeholder-text); /* Placeholder rengi */
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--primary-focus);
+}
+
+.input-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.input-group select {
+  appearance: none;
+  /* SVG ikonunu aÃ§Ä±k renkle gÃ¼ncelle */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path fill="%23AAAAAA" d="M0 0l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%;
+  background-size: 10px 5px;
+  padding-right: 2em;
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+}
+
+.toggle-group label {
+  margin: 0 0.5rem 0 0;
+  font-weight: 400;
+  font-size: 0.9em;
+  color: var(--text-color); /* Metin rengini kontrol et */
+}
+
+/* Checkbox iÃ§in belki Ã¶zel stil gerekebilir */
+.toggle-group input[type="checkbox"] {
+  width: auto;
+  margin-bottom: 0;
+  margin-right: 0.3rem;
+  accent-color: var(--primary-color); /* Modern tarayÄ±cÄ±lar iÃ§in */
+}
+
+/* Alt Kontrol BarÄ± */
+.main-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 50;
+  background-color: rgba(42, 42, 42, 0.9); /* Koyu yarÄ± saydam arka plan */
+  padding: 10px 16px;
+  border-radius: 50px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buton Stilleri - Genel */
+button {
+  border-radius: 50px;
+  border: none;
+  padding: 0.6em 1.2em;
+  font-size: 0.9em;
+  font-weight: 500;
+  font-family: inherit;
+  color: white; /* Ã‡oÄŸu buton iÃ§in beyaz metin */
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.3px;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  filter: brightness(110%); /* Hafif parlaklÄ±k */
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+  filter: brightness(95%); /* Hafif karartma */
+}
+
+button:focus {
+  outline: none;
+}
+
+button:disabled,
+button[disabled] {
+  background-color: var(--disabled-bg); /* Koyu devre dÄ±ÅŸÄ± arka plan */
+  color: var(--disabled-text); /* Koyu devre dÄ±ÅŸÄ± metin */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+
+/* Ä°kincil Buton (Ayarlar panelinde) */
+.secondary-button {
+  background-color: var(--secondary-hover); /* Biraz daha koyu ikincil */
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85em;
+  margin-top: 5px;
+  align-self: flex-start;
+  color: var(--dark-color); /* AÃ§Ä±k metin */
+}
+
+.secondary-button:hover:not(:disabled) {
+  background-color: var(--secondary-color); /* Hover'da biraz daha aÃ§Ä±k */
+}
+
+.secondary-button:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--secondary-focus);
+}
+
+/* Ana Kontrol Buton Renkleri - Aynen kalabilir, koyu temada Ã§alÄ±ÅŸÄ±r */
+
+/* BaÅŸlat (YeÅŸil - Kritik Eylem) */
+#start-recording {
+  background-color: var(--success-color);
+  color: white;
+  padding-left: 1.4em;
+  padding-right: 1.4em;
+}
+#start-recording:hover:not(:disabled) {
+  background-color: var(--success-hover);
+}
+#start-recording:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--success-focus);
+}
+
+/* Durdur (KÄ±rmÄ±zÄ± - Kritik Eylem) */
+#stop-recording {
+  background-color: var(--danger-color);
+  color: white;
+}
+#stop-recording:hover:not(:disabled) {
+  background-color: var(--danger-hover);
+}
+#stop-recording:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--danger-focus);
+}
+
+/* DiÄŸer TÃ¼m Ana Kontrol ButonlarÄ± (Ana Renk - Indigo) */
+#clear-all,
+#settings-button,
+#camera-button,
+#voice-activity-button,
+#transcript-toggle,
+#evaluate-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+#clear-all:hover:not(:disabled),
+#settings-button:hover:not(:disabled),
+#camera-button:hover:not(:disabled),
+#voice-activity-button:hover:not(:disabled),
+#transcript-toggle:hover:not(:disabled),
+#evaluate-button:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+#clear-all:focus-visible:not(:disabled),
+#settings-button:focus-visible:not(:disabled),
+#camera-button:focus-visible:not(:disabled),
+#voice-activity-button:focus-visible:not(:disabled),
+#transcript-toggle:focus-visible:not(:disabled),
+#evaluate-button:focus-visible:not(:disabled) {
+   box-shadow: 0 0 0 3px var(--primary-focus);
+}
+
+
+/* Modal Stilleri */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    position: relative;
+    margin: 5% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 12px;
+    background-color: var(--modal-bg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--text-color);
+}
+
+.modal-content h2 {
+    margin: 0 0 30px 0;
+    color: var(--accent-color);
+    font-size: 1.8em;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+#evaluation-results {
+    position: relative;
+    min-height: 120px;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: var(--bg-color-secondary);
+    font-size: 1em;
+    line-height: 1.7;
+}
+
+#evaluation-results.loading::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+#evaluation-results h3 {
+    color: var(--accent-color);
+    font-size: 1.4em;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    letter-spacing: -0.3px;
+}
+
+#evaluation-results h4 {
+    color: var(--text-color);
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 25px 0 15px 0;
+    letter-spacing: -0.2px;
+}
+
+#evaluation-results strong {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+#evaluation-results ul {
+    margin: 15px 0;
+    padding-left: 25px;
+    list-style-type: none;
+}
+
+#evaluation-results li {
+    margin: 12px 0;
+    position: relative;
+}
+
+#evaluation-results li::before {
+    content: "â€¢";
+    color: var(--accent-color);
+    font-weight: bold;
+    position: absolute;
+    left: -20px;
+}
+
+#evaluation-results code {
+    background-color: var(--bg-color);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Consolas", monospace;
+    font-size: 0.9em;
+}
+
+#evaluation-results .evaluation-error {
+    color: var(--error-color);
+    padding: 15px;
+    border: 1px solid var(--error-color);
+    border-radius: 8px;
+    margin: 15px 0;
+    background-color: rgba(255, 0, 0, 0.1);
+    font-weight: 500;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--secondary-color); /* AÃ§Ä±k gri */
+  text-shadow: none; /* GÃ¶lgeyi kaldÄ±r */
+  opacity: 0.7; /* OpaklÄ±ÄŸÄ± biraz ayarla */
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  transition: var(--transition);
+}
+
+.close:hover {
+  color: var(--dark-color); /* Hover'da daha aÃ§Ä±k */
+  opacity: 1;
+  text-decoration: none;
+}
+
+
+/* Responsive ayarlamalar (Mevcut yapÄ± korunuyor, renkler zaten deÄŸiÅŸkenlerle gÃ¼ncellendi) */
+@media (max-width: 992px) {
+  .visualization-panel {
+    width: 220px;
+  }
+  .controls {
+    width: 300px;
+    right: -320px; /* GeniÅŸliÄŸe gÃ¶re ayarla */
+  }
+  .main-controls {
+    gap: 8px;
+    padding: 8px 14px;
+  }
+  button {
+    font-size: 0.85em;
+    padding: 0.5em 1.1em;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow: auto;
+  }
+  #app {
+    height: auto;
+  }
+  form {
+    padding: 0; /* Mobil iÃ§in padding sÄ±fÄ±r kalabilir */
+  }
+  .container {
+    flex-direction: column;
+    height: 100vh;
+    border-radius: 0;
+  }
+  .visualization-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1rem;
+    gap: 1rem;
+    order: 1;
+    overflow-y: visible;
+  }
+  .visualizer-container,
+  .camera-container {
+    flex-basis: calc(50% - 1rem);
+    min-width: 150px;
+    margin-bottom: 0;
+  }
+  #received-text-container {
+    order: 2;
+    height: auto;
+    flex-grow: 1;
+    border-left: none;
+    padding: 1.25rem;
+  }
+  .main-controls {
+    position: static;
+    transform: none;
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid var(--border-color);
+    order: 3;
+    flex-wrap: wrap;
+    background-color: var(--light-color); /* Mobil kontrol barÄ± arka planÄ± */
+    gap: 8px;
+  }
+  .controls {
+    width: 85%;
+    max-width: 320px;
+    right: -100%;
+    height: calc(100% - 50px); /* Mobil iÃ§in yÃ¼ksekliÄŸi ayarla */
+    top: 0;
+    border-left: none;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.25); /* Mobil gÃ¶lge */
+  }
+  .controls.visible {
+    right: 0;
+    width: 85%;
+  }
+  .modal-content {
+    width: 90%;
+    margin: 1rem auto;
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .visualization-panel {
+    flex-direction: column;
+    align-items: center;
+  }
+  .visualizer-container,
+  .camera-container {
+    flex-basis: 90%;
+    max-width: 300px;
+  }
+  .main-controls button {
+    font-size: 0.8em;
+    padding: 0.5em 0.9em;
+  }
+  #received-text-container p {
+    max-width: 90%;
+  }
+  .controls {
+    width: 95%;
+  }
+  .controls.visible {
+    width: 95%;
+  }
+  .modal-content h2 {
+    font-size: 1.1rem;
+    padding: 0.8rem 1rem;
+  }
+  #evaluation-results {
+    padding: 1rem;
+    font-size: 0.85em;
+  }
+  .close {
+    font-size: 1.6rem;
+    top: 8px;
+    right: 12px;
+  }
+}

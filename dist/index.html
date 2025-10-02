@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realtime API with Evaluation</title> <!-- style.css dosyasını bağla -->
+  <script type="module" crossorigin src="/assets/index-rVJgXanF.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BQaplJ1a.css">
+</head>
+
+<body>
+  <div id="app">
+    <form>
+      <div class="container">
+        <!-- Sol Panel: Görselleştirme ve Kamera -->
+        <div class="visualization-panel">
+          <div class="visualizer-container">
+            <label>Voice Activity</label>
+            <canvas id="audio-visualizer" width="300" height="120"></canvas> <!-- Yükseklik ayarlandı -->
+            <div id="audio-status" class="status-indicator off">Inactive</div>
+          </div>
+
+          <div class="camera-container">
+            <label>Camera</label>
+            <video id="user-camera" autoplay muted playsinline></video>
+            <div id="camera-status" class="status-indicator off">Inactive</div>
+          </div>
+        </div>
+
+        <!-- Orta Panel: Konuşma Metni -->
+        <div id="received-text-container">
+            <!-- Konuşma metinleri buraya gelecek -->
+            <div id="ringBox">
+              <div class="ring-content">
+                  <div class="wave"></div>
+                  <div class="wave" style="animation-delay: 0.6s"></div>
+                  <div class="wave" style="animation-delay: 1.2s"></div>
+                  <div class="call-status">Ringing...</div>
+                  <div class="loader" style="display: none;">Sending message...</div>
+              </div>
+          </div>
+        </div>
+
+        <!-- Sağ Panel: Ayarlar (Gizlenebilir) -->
+        <div id="controls-panel" class="controls">
+          <h3>Settings</h3> <!-- Panel başlığı -->
+
+          <div class="input-group">
+            <label for="endpoint">Endpoint (Realtime Service)</label>
+            <input id="endpoint" type="text" placeholder="Enter resource/endpoint URL" />
+            <div class="toggle-group">
+              <label for="azure-toggle">Use Azure OpenAI</label>
+              <input id="azure-toggle" type="checkbox" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="api-key">API Key (Realtime Service)</label>
+            <input id="api-key" type="password" placeholder="Enter API key for realtime service" />
+            <label for="deployment-or-model">Deployment / Model (Realtime Service)</label>
+            <input id="deployment-or-model" type="text" placeholder="Enter deployment/model for realtime" />
+          </div>
+
+          <!-- Azure OpenAI Değerlendirme Ayarları -->
+          <div class="input-group">
+            <label for="evaluation-endpoint">Azure OpenAI Endpoint</label>
+            <input id="evaluation-endpoint" type="text" placeholder="Enter your Azure OpenAI endpoint URL" />
+            <label for="evaluation-api-key">Azure OpenAI API Key</label>
+            <input id="evaluation-api-key" type="password" placeholder="Enter your Azure OpenAI API key" />
+            <label for="evaluation-deployment">Azure OpenAI Deployment Name</label>
+            <input id="evaluation-deployment" type="text" placeholder="Enter your GPT-4 deployment name" />
+            <small>These settings are used only for the 'Evaluate Performance' feature.</small>
+          </div>
+          <!-- Azure OpenAI Ayarları Sonu -->
+
+          <div class="input-group">
+            <label for="session-instructions">System Message (Realtime Bot)</label>
+            <textarea id="session-instructions" placeholder="Optional instructions for the AI assistant" rows="4"></textarea>
+            <button id="select-template-button" type="button" class="secondary-button">Select Template</button>
+          </div>
+
+          <div class="input-group">
+            <label for="temperature">Temperature (Realtime Bot)</label>
+            <input id="temperature" type="number" min="0.6" max="1.2" step="0.05" placeholder="0.6-1.2 (default 0.8)"/>
+          </div>
+
+          <div class="input-group">
+            <label for="voice">Voice (Realtime Bot)</label>
+            <select id="voice">
+              <option value="">Default</option>
+              <option>alloy</option>
+              <option>ash</option>
+              <option>ballad</option>
+              <option>coral</option>
+              <option>echo</option>
+              <option>sage</option>
+              <option>shimmer</option>
+              <option>verse</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Alt Kontrol Barı -->
+        <div class="main-controls">
+          <button id="start-recording" type="button" title="Start Conversation">Record</button>
+          <button id="stop-recording" type="button" title="Stop Conversation" disabled="true">Stop</button>
+          <button id="clear-all" type="button" title="Clear Transcript">Clear</button>
+          <button id="settings-button" type="button" title="Toggle Settings Panel">Settings</button>
+          <button id="camera-button" type="button" title="Toggle Camera">Camera</button>
+          <button id="voice-activity-button" type="button" title="Toggle Voice Visualization Only">Voice Viz</button>
+          <button id="transcript-toggle" type="button" title="Toggle Transcript Visibility">Hide Transcript</button>
+          <button id="evaluate-button" type="button" title="Evaluate Sales Rep Performance" disabled="true">Evaluate</button> <!-- Değerlendirme Butonu -->
+        </div>
+
+        <!-- Değerlendirme Modalı -->
+        <div id="evaluation-modal" class="modal">
+          <div class="modal-content">
+            <span id="close-modal" class="close" title="Close">×</span>
+            <h2>Performance Evaluation</h2>
+            <div id="evaluation-results">
+              <!-- Değerlendirme sonuçları buraya gelecek -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

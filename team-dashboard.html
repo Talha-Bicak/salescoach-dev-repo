@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Lead Dashboard - Satış Eğitim Platformu</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-gray-800">Team Lead Dashboard</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-600" id="user-name"></span>
+          <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Çıkış Yap</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Takım Genel Görünümü</h2>
+      <p class="text-gray-600">Tüm satış personelinin performansını izleyin</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-md p-6 text-white">
+        <p class="text-blue-100 text-sm mb-1">Toplam IKÇO</p>
+        <p class="text-4xl font-bold" id="total-ikco">0</p>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-md p-6 text-white">
+        <p class="text-green-100 text-sm mb-1">Toplam Görüşme</p>
+        <p class="text-4xl font-bold" id="total-sessions">0</p>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-md p-6 text-white">
+        <p class="text-purple-100 text-sm mb-1">Ortalama Skor</p>
+        <p class="text-4xl font-bold" id="team-avg-score">-</p>
+      </div>
+
+      <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-md p-6 text-white">
+        <p class="text-orange-100 text-sm mb-1">Aktif Görüşmeler</p>
+        <p class="text-4xl font-bold" id="active-sessions">0</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Performans Dağılımı</h3>
+        <canvas id="performanceChart" height="200"></canvas>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">En Başarılı IKÇO'lar</h3>
+        <div id="top-performers" class="space-y-3">
+          <p class="text-gray-500">Yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Tüm IKÇO'lar</h3>
+      <div id="ikco-list" class="space-y-4">
+        <p class="text-gray-500">Yükleniyor...</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Son Görüşmeler</h3>
+      <div id="recent-sessions" class="space-y-4">
+        <p class="text-gray-500">Yükleniyor...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token || !user.id || user.role !== 'TEAM_LEAD') {
+      window.location.href = '/login.html';
+    }
+
+    document.getElementById('user-name').textContent = user.name;
+
+    let performanceChart = null;
+
+    async function loadTeamOverview() {
+      try {
+        const response = await fetch(`${API_URL}/api/team-lead/overview`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load overview');
+
+        const data = await response.json();
+        const overview = data.overview || [];
+
+        document.getElementById('total-ikco').textContent = overview.length;
+
+        const totalSessions = overview.reduce((sum, u) => sum + u.totalSessions, 0);
+        document.getElementById('total-sessions').textContent = totalSessions;
+
+        const validScores = overview.filter(u => u.averageScore !== null).map(u => u.averageScore);
+        if (validScores.length > 0) {
+          const teamAvg = validScores.reduce((a, b) => a + b, 0) / validScores.length;
+          document.getElementById('team-avg-score').textContent = teamAvg.toFixed(1);
+        }
+
+        const ikcoList = document.getElementById('ikco-list');
+        if (overview.length === 0) {
+          ikcoList.innerHTML = '<p class="text-gray-500">Henüz IKÇO bulunmuyor</p>';
+        } else {
+          ikcoList.innerHTML = overview.map(ikco => `
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="font-semibold text-gray-800 text-lg">${ikco.name}</p>
+                  <p class="text-sm text-gray-500">${ikco.email}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold ${ikco.averageScore ? 'text-blue-600' : 'text-gray-400'}">${ikco.averageScore ? ikco.averageScore.toFixed(1) : '-'}</p>
+                  <p class="text-xs text-gray-500">Ortalama Skor</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                  <p class="text-sm text-gray-500">Görüşme</p>
+                  <p class="text-lg font-semibold text-gray-800">${ikco.totalSessions}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Değerlendirme</p>
+                  <p class="text-lg font-semibold text-gray-800">${ikco.totalEvaluations}</p>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        const topPerformers = [...overview]
+          .filter(u => u.averageScore !== null)
+          .sort((a, b) => b.averageScore - a.averageScore)
+          .slice(0, 5);
+
+        const topPerformersDiv = document.getElementById('top-performers');
+        if (topPerformers.length === 0) {
+          topPerformersDiv.innerHTML = '<p class="text-gray-500">Henüz değerlendirme bulunmuyor</p>';
+        } else {
+          topPerformersDiv.innerHTML = topPerformers.map((ikco, index) => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">${index + 1}</span>
+                <div>
+                  <p class="font-semibold text-gray-800">${ikco.name}</p>
+                  <p class="text-xs text-gray-500">${ikco.totalSessions} görüşme</p>
+                </div>
+              </div>
+              <p class="text-xl font-bold text-blue-600">${ikco.averageScore.toFixed(1)}</p>
+            </div>
+          `).join('');
+        }
+
+        if (performanceChart) performanceChart.destroy();
+        
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        performanceChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: overview.map(u => u.name.split(' ')[0]),
+            datasets: [{
+              label: 'Ortalama Skor',
+              data: overview.map(u => u.averageScore || 0),
+              backgroundColor: 'rgba(59, 130, 246, 0.5)',
+              borderColor: 'rgb(59, 130, 246)',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 10
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        console.error('Overview load error:', error);
+      }
+    }
+
+    async function loadRecentSessions() {
+      try {
+        const response = await fetch(`${API_URL}/api/team-lead/sessions`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load sessions');
+
+        const data = await response.json();
+        const sessions = (data.sessions || []).slice(0, 10);
+
+        const recentSessionsDiv = document.getElementById('recent-sessions');
+        
+        const activeSessions = sessions.filter(s => !s.endedAt);
+        document.getElementById('active-sessions').textContent = activeSessions.length;
+
+        if (sessions.length === 0) {
+          recentSessionsDiv.innerHTML = '<p class="text-gray-500">Henüz görüşme bulunmuyor</p>';
+        } else {
+          recentSessionsDiv.innerHTML = sessions.map(session => {
+            const date = new Date(session.startedAt).toLocaleDateString('tr-TR');
+            const time = new Date(session.startedAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            const duration = session.endedAt ? Math.round((new Date(session.endedAt) - new Date(session.startedAt)) / 1000 / 60) : '-';
+            const hasEval = session.evaluations?.length > 0;
+            
+            return `
+              <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors cursor-pointer" onclick="viewSession('${session.id}')">
+                <div class="flex justify-between items-start mb-2">
+                  <div>
+                    <p class="font-semibold text-gray-800">${session.user.name}</p>
+                    <p class="text-sm text-gray-500">${date} - ${time} • ${duration} dakika</p>
+                  </div>
+                  ${!session.endedAt ? '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Aktif</span>' : hasEval ? '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Değerlendirildi</span>' : '<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tamamlandı</span>'}
+                </div>
+                <p class="text-sm text-gray-600">${session.transcripts?.length || 0} mesaj</p>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (error) {
+        console.error('Sessions load error:', error);
+      }
+    }
+
+    function viewSession(sessionId) {
+      window.location.href = `/session.html?id=${sessionId}`;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+
+    loadTeamOverview();
+    loadRecentSessions();
+  </script>
+</body>
+</html>

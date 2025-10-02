@@ -5,11 +5,38 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Realtime API with Evaluation</title>
-  <link rel="stylesheet" href="/src/style.css"> <!-- style.css dosyasını bağla -->
+  <title>Satış Görüşmesi - Satış Eğitim Platformu</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
+  <script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!token || !user) {
+      window.location.href = '/login.html';
+    }
+  </script>
+  
+  <nav class="bg-white shadow-md mb-2">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <a href="javascript:history.back()" class="text-gray-600 hover:text-gray-800">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </a>
+        <h1 class="text-xl font-bold text-gray-800">Satış Görüşmesi</h1>
+      </div>
+      <span class="text-gray-600" id="nav-user-name"></span>
+    </div>
+  </nav>
+  <script>
+    if (user) {
+      document.getElementById('nav-user-name').textContent = user.name;
+    }
+  </script>
   <div id="app">
     <form>
       <div class="container">

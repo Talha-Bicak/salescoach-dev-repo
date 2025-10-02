@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Görüşme Detayı - Satış Eğitim Platformu</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center space-x-4">
+          <a href="javascript:history.back()" class="text-gray-600 hover:text-gray-800">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </a>
+          <h1 class="text-2xl font-bold text-gray-800">Görüşme Detayı</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-600" id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div>
+          <p class="text-sm text-gray-500">IKÇO</p>
+          <p class="text-lg font-semibold text-gray-800" id="session-user">-</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Tarih</p>
+          <p class="text-lg font-semibold text-gray-800" id="session-date">-</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Süre</p>
+          <p class="text-lg font-semibold text-gray-800" id="session-duration">-</p>
+        </div>
+      </div>
+
+      <div id="evaluation-section" class="hidden border-t pt-6 mt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Değerlendirme</h3>
+        <div class="bg-blue-50 rounded-lg p-4">
+          <p class="text-2xl font-bold text-blue-600 mb-2" id="evaluation-score">-</p>
+          <div class="text-gray-700 whitespace-pre-wrap" id="evaluation-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Konuşma Transkripti</h3>
+      <div id="transcript-container" class="space-y-4">
+        <p class="text-gray-500">Yükleniyor...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+
+    document.getElementById('user-name').textContent = user.name;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('id');
+
+    if (!sessionId) {
+      window.location.href = user.role === 'TEAM_LEAD' ? '/team-dashboard.html' : '/dashboard.html';
+    }
+
+    async function loadSession() {
+      try {
+        const response = await fetch(`${API_URL}/api/sessions/${sessionId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load session');
+        }
+
+        const data = await response.json();
+        const session = data.session;
+
+        document.getElementById('session-user').textContent = session.user.name;
+        
+        const date = new Date(session.startedAt).toLocaleString('tr-TR');
+        document.getElementById('session-date').textContent = date;
+
+        if (session.endedAt) {
+          const duration = Math.round((new Date(session.endedAt) - new Date(session.startedAt)) / 1000 / 60);
+          document.getElementById('session-duration').textContent = `${duration} dakika`;
+        } else {
+          document.getElementById('session-duration').textContent = 'Devam ediyor';
+        }
+
+        if (session.evaluations && session.evaluations.length > 0) {
+          const evaluation = session.evaluations[0];
+          document.getElementById('evaluation-section').classList.remove('hidden');
+          document.getElementById('evaluation-score').textContent = evaluation.score ? evaluation.score.toFixed(1) : 'N/A';
+          document.getElementById('evaluation-result').textContent = evaluation.result;
+        }
+
+        const transcriptContainer = document.getElementById('transcript-container');
+        if (session.transcripts && session.transcripts.length > 0) {
+          transcriptContainer.innerHTML = session.transcripts.map(t => {
+            const isUser = t.speaker.toLowerCase().includes('user');
+            return `
+              <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+                <div class="${isUser ? 'bg-blue-100 text-blue-900' : 'bg-gray-100 text-gray-900'} rounded-lg p-4 max-w-xl">
+                  <p class="text-xs font-semibold mb-1 ${isUser ? 'text-blue-700' : 'text-gray-600'}">${t.speaker}</p>
+                  <p class="text-sm">${t.text}</p>
+                  <p class="text-xs text-gray-500 mt-1">${new Date(t.timestamp).toLocaleTimeString('tr-TR')}</p>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          transcriptContainer.innerHTML = '<p class="text-gray-500">Henüz transkript bulunmuyor</p>';
+        }
+
+      } catch (error) {
+        console.error('Session load error:', error);
+        alert('Görüşme yüklenirken hata oluştu');
+        window.location.href = user.role === 'TEAM_LEAD' ? '/team-dashboard.html' : '/dashboard.html';
+      }
+    }
+
+    loadSession();
+  </script>
+</body>
+</html>

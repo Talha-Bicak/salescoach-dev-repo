@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKÇO Dashboard - Satış Eğitim Platformu</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-gray-800">Satış Eğitim Platformu</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-600" id="user-name"></span>
+          <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Çıkış Yap</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Hoş Geldiniz!</h2>
+      <p class="text-gray-600">Satış becerilerinizi geliştirmek için yeni bir görüşme başlatın</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm mb-1">Toplam Görüşme</p>
+            <p class="text-3xl font-bold text-blue-600" id="total-sessions">0</p>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm mb-1">Değerlendirmeler</p>
+            <p class="text-3xl font-bold text-green-600" id="total-evaluations">0</p>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm mb-1">Ortalama Skor</p>
+            <p class="text-3xl font-bold text-purple-600" id="average-score">-</p>
+          </div>
+          <div class="bg-purple-100 p-3 rounded-full">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-8 mb-8 text-white">
+      <h3 class="text-2xl font-bold mb-4">Yeni Görüşme Başlat</h3>
+      <p class="mb-6">AI müşteri ile gerçekçi bir satış görüşmesi yaparak becerilerinizi geliştirin</p>
+      <a href="/index.html" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">Görüşmeye Başla</a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Görüşme Geçmişi</h3>
+      <div id="sessions-list" class="space-y-4">
+        <p class="text-gray-500">Yükleniyor...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token || !user.id) {
+      window.location.href = '/login.html';
+    }
+
+    document.getElementById('user-name').textContent = user.name;
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch(`${API_URL}/api/sessions`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load sessions');
+
+        const data = await response.json();
+        const sessions = data.sessions || [];
+
+        document.getElementById('total-sessions').textContent = sessions.length;
+        
+        const totalEvals = sessions.reduce((sum, s) => sum + (s.evaluations?.length || 0), 0);
+        document.getElementById('total-evaluations').textContent = totalEvals;
+
+        const scores = sessions.flatMap(s => s.evaluations || []).map(e => e.score).filter(s => s !== null);
+        if (scores.length > 0) {
+          const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+          document.getElementById('average-score').textContent = avgScore.toFixed(1);
+        }
+
+        const sessionsList = document.getElementById('sessions-list');
+        if (sessions.length === 0) {
+          sessionsList.innerHTML = '<p class="text-gray-500">Henüz görüşme bulunmuyor</p>';
+        } else {
+          sessionsList.innerHTML = sessions.map(session => {
+            const date = new Date(session.startedAt).toLocaleDateString('tr-TR');
+            const time = new Date(session.startedAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            const duration = session.endedAt ? Math.round((new Date(session.endedAt) - new Date(session.startedAt)) / 1000 / 60) : '-';
+            const hasEval = session.evaluations?.length > 0;
+            
+            return `
+              <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors cursor-pointer" onclick="viewSession('${session.id}')">
+                <div class="flex justify-between items-start mb-2">
+                  <div>
+                    <p class="font-semibold text-gray-800">${date} - ${time}</p>
+                    <p class="text-sm text-gray-500">Süre: ${duration} dakika</p>
+                  </div>
+                  ${hasEval ? '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Değerlendirildi</span>' : '<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Değerlendirilmedi</span>'}
+                </div>
+                <p class="text-sm text-gray-600">${session.transcripts?.length || 0} mesaj</p>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (error) {
+        console.error('Dashboard load error:', error);
+        document.getElementById('sessions-list').innerHTML = '<p class="text-red-500">Veriler yüklenirken hata oluştu</p>';
+      }
+    }
+
+    function viewSession(sessionId) {
+      window.location.href = `/session.html?id=${sessionId}`;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

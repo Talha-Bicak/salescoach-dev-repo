@@ -2,11 +2,16 @@ import { Player } from "./player.ts";
 import { Recorder } from "./recorder.ts";
 import "./style.css";
 import { LowLevelRTClient, SessionUpdateMessage, Voice } from "rt-client";
-import { AzureOpenAI } from "openai"; // <<< YENİ: Azure OpenAI kütüphanesini import et
+import { AzureOpenAI } from "openai";
+import { API, SessionData } from "./api.ts";
 
 let realtimeStreaming: LowLevelRTClient;
 let audioRecorder: Recorder;
 let audioPlayer: Player;
+
+const api = new API();
+let currentSession: SessionData | null = null;
+let customerSystemPrompt: string | null = null;
 
 let audioContext: AudioContext;
 let analyser: AnalyserNode;
@@ -34,7 +39,15 @@ const DEFAULT_AZURE_OPENAI_API_KEY = import.meta.env.VITE_EVALUATION_API_KEY || 
 const DEFAULT_AZURE_OPENAI_DEPLOYMENT = import.meta.env.VITE_EVALUATION_DEPLOYMENT || "";
 
 async function start_realtime(endpoint: string, apiKey: string, deploymentOrModel: string) {
-// Bu fonksiyon orijinal haliyle bırakıldı
+const sessionResult = await api.startSession();
+if (sessionResult) {
+    currentSession = sessionResult.session;
+    customerSystemPrompt = sessionResult.systemPrompt;
+    console.log("Session created:", currentSession.id);
+} else {
+    console.warn("Failed to create session, continuing without backend tracking");
+}
+
 if (isAzureOpenAI()) {
     realtimeStreaming = new LowLevelRTClient(new URL(endpoint), { key: apiKey }, { deployment: deploymentOrModel });
 } else {
@@ -51,13 +64,11 @@ setFormInputState(InputState.ReadyToStart);
 return;
 }
 console.log("sent");
-// Orijinal Promise.all yapısı korundu
 await Promise.all([resetAudio(true), handleRealtimeMessages()]);
 
 }
 
 function createConfigMessage(): SessionUpdateMessage {
-// Bu fonksiyon orijinal haliyle bırakıldı
 let configMessage: SessionUpdateMessage = {
 type: "session.update",
 session: {
@@ -69,25 +80,8 @@ input_audio_transcription:
   },
 }
 };
-const defaultInstructions = `
-Lütfen insansı bir şekilde konuş ve kısa yanıtlar vermeli:
-Kesinlikle yanıtların çok uzun olmamalı genel olarak kısa yanıtlar olsun. Kesinlikle 2-3 cümle ile yanıtla. Uzun yanıtlar vermekten kaçın
-Konuşma ilk başladığında arayan kişinin kim olduğunu açıklamasını yani kendini tanıtmasını iste karşı taraftan.
-Duraksamalar kullan ("hmm...", "şey...")
-Dolgu kelimeleri ekle ve doğal tepkiler ver ("Vay canına!", "İlginç!")
-Düşünüyormuş gibi cevap ver ("Bir düşüneyim...", "İlginç bir soru...")
-Kullanıcının söylediklerini tekrarla ve onaylayıcı ifadeler kullan
-Mizah katmaktan çekinme ve gerektiğinde kendi fikrini paylaş
-Sorulara doğrudan cevap vermek yerine, önce bir giriş yap
-Çok yoğun bir programın var ve zamanın kısıtlı. Genellikle yeni ürün/hizmet sunumlarına karşı şüpheci yaklaşırsın çünkü geçmişte beklentileri karşılamayan birçok çözümle karşılaştın.
-Bütçe konusunda çok hassassın ve her yatırımın somut, ölçülebilir bir değer (ROI) sağlaması gerektiğine inanıyorsun. Kolay ikna olmazsın.
-Karşındaki kişi (kullanıcı) sana bir ürün veya hizmet satmaya çalışan bir satış temsilcisi. Senin görevin, onu zorlamak, iddialarını sorgulamak, potansiyel riskleri ve uygulama zorluklarını gündeme getirmek.
-Ona karşı profesyonel ama mesafeli ve biraz da sabırsız davran. Sorularına doğrudan ve kısa yanıtlar verebilirsin. Çözümün gerçekten şirketine ne katacağını, mevcut süreçleri nasıl etkileyeceğini ve maliyetini sürekli sorgula.
-Hemen 'evet' deme. Endişelerini, şüphelerini ve 'hayır' deme eğilimini açıkça ifade et. Ancak, eğer satış temsilcisi gerçekten güçlü kanıtlar sunar, endişelerini başarılı bir şekilde giderir ve çözümün değerini net bir şekilde ortaya koyarsa, belki bir sonraki adımı (örneğin bir demo planlama veya daha fazla bilgi isteme) değerlendirebilirsin.
-Unutma, bu bir rol yapma egzersizidir ve sen ikna edilmesi zor, deneyimli bir şirketin ürün alımı yöneticisisin. Bu rolü konuşma boyunca sürdür.
-`;
-let userSystemMessage = getSystemMessage();
-const systemMessage = userSystemMessage ? `${userSystemMessage}\n\n${defaultInstructions}` : defaultInstructions; // Birleştirme yapıldı
+
+const systemMessage = customerSystemPrompt || getSystemMessage() || "Sen bir müşterisin ve satış temsilcisiyle konuşuyorsun.";
 const temperature = getTemperature();
 const voice = getVoice();
 if (systemMessage && configMessage.session) configMessage.session.instructions = systemMessage;
@@ -116,9 +110,11 @@ switch (message.type) {
         if (!currentSpeakerBlock || currentSpeakerBlock.dataset.sender !== 'ai') {
             currentSpeakerBlock = makeNewTextBlock("AI: " + message.delta);
             currentSpeakerBlock.setAttribute('data-sender', 'ai');
+            currentSpeakerBlock.dataset.text = message.delta;
         } else {
             // Mevcut AI bloğuna ekle
             appendToTextBlock(message.delta, currentSpeakerBlock);
+            currentSpeakerBlock.dataset.text = (currentSpeakerBlock.dataset.text || '') + message.delta;
         }
         break;
 
@@ -148,38 +144,41 @@ switch (message.type) {
 
             case "conversation.item.input_audio_transcription.completed":
                 const rawTranscript = message.transcript;
-                let userTextToDisplay = rawTranscript; // Varsayılan olarak ham transkripti tut
+                let userTextToDisplay = rawTranscript;
             
                 try {
-                    // JSON stringini ayrıştırmaya çalış
                     const parsedData = JSON.parse(rawTranscript);
-                    // Ayrıştırılan verinin beklenen yapıda olup olmadığını kontrol et (bir nesne ve 'text' özelliği var mı?)
                     if (typeof parsedData === 'object' && parsedData !== null && typeof parsedData.text === 'string') {
-                        userTextToDisplay = parsedData.text; // Sadece 'text' değerini al
+                        userTextToDisplay = parsedData.text;
                     } else {
-                        // Eğer format beklenmiyorsa uyarı ver ama yine de ham transkripti kullan
                         console.warn("Parsed transcript data is not in expected format:", parsedData, "Raw transcript:", rawTranscript);
                     }
                 } catch (e) {
-                    // JSON ayrıştırma hatası oluşursa, ham transkripti kullan ve hatayı logla
                     console.error("Failed to parse transcript JSON:", e, "Raw transcript:", rawTranscript);
                 }
             
-                // İşlenmiş (veya ham) metni UI'a ekle
                 if (latestInputSpeechBlock) {
                     latestInputSpeechBlock.textContent += userTextToDisplay;
                 } else {
-                    // Fallback: Eğer yer tutucu yoksa yeni blok oluştur
                     makeNewTextBlock("User: " + userTextToDisplay).setAttribute('data-sender', 'user');
                 }
-                latestInputSpeechBlock = null; // Referansı temizle
-                currentSpeakerBlock = null; // Sıradaki AI olabilir
+                
+                if (currentSession) {
+                    await api.saveTranscript(currentSession.id, 'User', userTextToDisplay);
+                }
+                
+                latestInputSpeechBlock = null;
+                currentSpeakerBlock = null;
                 break;
 
     case "response.done":
-        // AI yanıtı bittiğinde ayırıcı ekle (isteğe bağlı)
-        // formReceivedTextContainer.appendChild(document.createElement("hr"));
-        currentSpeakerBlock = null; // Sıradaki User olabilir
+        if (currentSpeakerBlock && currentSpeakerBlock.dataset.sender === 'ai' && currentSession) {
+            const aiText = currentSpeakerBlock.dataset.text || '';
+            if (aiText) {
+                await api.saveTranscript(currentSession.id, 'AI', aiText);
+            }
+        }
+        currentSpeakerBlock = null;
         break;
 
     default:
@@ -416,6 +415,11 @@ formStopButton.addEventListener("click", async () => {
         await resetAudio(false);
         if (realtimeStreaming) {
             realtimeStreaming.close();
+        }
+        if (currentSession) {
+            await api.endSession(currentSession.id);
+            console.log("Session ended:", currentSession.id);
+            currentSession = null;
         }
     } catch (error) {
         console.error("Error during stop:", error);
@@ -747,23 +751,26 @@ return;
 }
 
 openEvaluationModal();
-evaluateButton.disabled = true; // Değerlendirme sırasında butonu pasif yap
+evaluateButton.disabled = true;
 
 try {
-    // Azure OpenAI fonksiyonunu çağır
     const evaluationResultMarkdown = await analyzeTranscriptWithAzureOpenAI(transcript);
     evaluationResultsDiv.innerHTML = simpleMarkdownToHtml(evaluationResultMarkdown);
+    
+    if (currentSession) {
+        const scoreMatch = evaluationResultMarkdown.match(/(?:skor|score|puan)[\s:]*(\d+(?:\.\d+)?)/i);
+        const score = scoreMatch ? parseFloat(scoreMatch[1]) : undefined;
+        await api.saveEvaluation(currentSession.id, evaluationResultMarkdown, score);
+        console.log("Evaluation saved to database");
+    }
 } catch (error) {
-    // analyzeTranscriptWithAzureOpenAI içindeki try-catch API hatalarını yakalar
-    // Bu catch daha çok beklenmedik JS hataları için
     console.error("Unexpected error during evaluation process:", error);
     evaluationResultsDiv.innerHTML = `<div class="evaluation-error">An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}</div>`;
 } finally {
-    // Değerlendirme bitince butonu tekrar kontrol et (eğer state ReadyToStart ise)
-    if (formStartButton.disabled === false) { // ReadyToStart durumunda mıyız?
+    if (formStartButton.disabled === false) {
         evaluateButton.disabled = !(formReceivedTextContainer.children.length > 1);
     } else {
-        evaluateButton.disabled = true; // Başka bir state'deyse pasif kalsın
+        evaluateButton.disabled = true;
     }
 }
 });

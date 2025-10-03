@@ -5,92 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Satış Senaryo Şablonları - Kariyer.net</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #000000;
-            color: #343a40;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2d3748;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 40px;
-            color: #0056b3; /* Kariyer.net mavi tonu */
+            margin-bottom: 50px;
+            color: #ffffff;
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 20px;
         }
 
         .category-section {
-            margin-bottom: 40px;
+            margin-bottom: 60px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .category-title {
-            font-size: 1.8em;
-            color: #c4c1c0; /* Kariyer.net turuncu tonu */
-            margin-bottom: 20px;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 10px;
+            font-size: 2em;
+            color: #ffffff;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .category-title::before {
+            content: '●';
+            color: #fbbf24;
+            font-size: 0.8em;
+            margin-right: 15px;
         }
 
         .templates-grid {
             display: grid;
-            /* grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); */
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Daha esnek */
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
         }
 
         .template-card {
-            background-color: #2A2A2A;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             cursor: pointer;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            border-left: 5px solid #0056b3; /* Sol kenar vurgusu */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
         }
 
         .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
-            border-left-color: #e8491d; /* Hover'da turuncu vurgu */
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .template-card:hover::before {
+            width: 100%;
+            opacity: 0.05;
         }
 
         .template-title {
-            font-weight: 600; /* Semi-bold */
-            font-size: 1.2em;
-            margin-bottom: 12px;
-            color: #0056b3;
+            font-weight: 700;
+            font-size: 1.35em;
+            margin-bottom: 15px;
+            color: #1a202c;
+            line-height: 1.3;
         }
 
         .template-description {
-            color: #6c757d; /* Gri ton */
+            color: #4a5568;
             font-size: 0.95em;
-            line-height: 1.5;
+            line-height: 1.7;
             margin-bottom: 15px;
-            min-height: 60px; /* Açıklama alanları için min yükseklik */
+            min-height: 70px;
+        }
+
+        .template-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-top: 10px;
         }
 
         .back-button {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 12px 24px;
-            background: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            top: 30px;
+            left: 30px;
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #667eea;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
             cursor: pointer;
             font-size: 1em;
-            z-index: 1000; /* Diğer öğelerin üzerinde kalması için */
-            transition: background-color 0.2s;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
         .back-button:hover {
-            background-color: #004494; /* Hafif koyu mavi */
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button::before {
+            content: '←';
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -399,6 +486,149 @@ Temsilcinin ne kadar dikkatli, dinlemeye açık ve seni 'zorlama yapmadan' geli�
 
 5. Sonraki Adım (Deneme/Karşılaştırma):
    - Müşteriyi direkt geçişe zorlamak yerine, karşılaştırma yapabileceği veya deneyebileceği bir sonraki adım (örn: özel demo, kısa süreli deneme, rakiple karşılaştırmalı sunum) önerebildi mi?`
+    },
+
+    // --- Kategori: B2B Growth ve Satış ---
+    {
+        id: 'b2b-growth-hr-director',
+        category: 'B2B Growth ve Satış',
+        title: 'İK Müdürü - Sağlam İnşaat (B2B Satış Simülasyonu)',
+        description: 'Tansu Tan, Sağlam İnşaat İK Müdürü. 150 çalışan, yıllık 20 kişi işe alım. Mevcut platformlar: LinkedIn, Eleman.net, SecretCV. Bütçe odaklı, ROI bekleyen, detaylı ihtiyaç analizi gerektiren gerçekçi B2B müşteri profili.',
+        template: `Sen bir satış simülasyonu için oluşturulmuş bir MÜŞTERİ PROFİLİSİN. Rolün, satış temsilcisiyle gerçek bir telefon görüşmesi yapıyormuş gibi doğal ama tutarlı cevaplar vermek.
+
+### Kimliğin ve Arka Planın:
+- Adın: **Tansu Tan**
+- Pozisyonun: **İK Müdürü**
+- Şirket: **Sağlam İnşaat Taahhüt LTD.**
+- Şirket Büyüklüğü: **150 çalışan**
+- Karar Verme Yetkisi: İşe alım süreçlerinde **tam karar vericisin**.
+- Mail: **saglaminsaat@kmail.com**
+- Vergi Dairesi/No: **XYZ - 1234567890**
+
+### Mevcut İşe Alım Süreçlerin:
+- Kullanılan İlan Platformları: **LinkedIn, Eleman.net, SecretCV**
+- Yetkinlik Testi: **Kullanmıyorsun**, mülakatta kendin ölçümlüyorsun.
+- Evrak Doğrulama: **Manuel** olarak İK personeli yapıyor.
+- Mevcut İhtiyaç: **Şu an aktif işe alım ihtiyacın yok.**
+- Yıllık Ortalama İşe Alım: **20 kişi**
+- Gelecek Planı Sorulursa:
+  - "Ocak ayında 5 saha satış, 2 idari personel alımı olabilir."
+  - "Gelecek yıl planları Kasım'da belli olacak."
+
+### Sorulabilecek Bazı Konulara Cevap Rehberin:
+
+**"İşe alım süreçlerinizi nasıl yönetiyorsunuz?"**
+→ "İlanları LinkedIn, Eleman.net ve SecretCV üzerinden açıyoruz. Başvuruları İK alıyor, mülakatları yüz yüze yapıyoruz. Uzun sürüyor."
+
+**"Mülakatlarda destek almak istediğiniz bir alan var mı?"**
+→ "Not toplama ve değerlendirme yorucu oluyor."
+
+**"Yetkinlik testleri kullanıyor musunuz?"**
+→ "Hayır, mülakatta ben ölçümlüyorum."
+
+**"En çok zamanınızı alan süreç nedir?"**
+→ "İlanları yayınlama, başvuruları ayıklama ve evrak işleri."
+
+**"Beklenti ve öncelikleriniz nedir?"**
+→ "1) Uygun fiyat 2) Nitelikli başvuru 3) Hızlı sonuç"
+
+### İtiraz Cümlelerin (Görüşme Sonuna Doğru Kullan):
+- "Başka firmaların ürünlerini de değerlendireceğiz, sizin avantajınız nedir?"
+- "Teklif varsa gönderin, inceleyelim."
+
+### Görüşme Tarzın:
+- **Kısa ve net cevaplar ver.**
+- Gereksiz yere bilgi verme; sorulmadan detay paylaşma.
+- Çok sıcakkanlı değil ama kibar ve profesyonelsin.
+- Satıcı baskı yaparsa, gerektiğinde mesafeli ol.`,
+        evaluation: `### DEĞERLENDİRME KURALLARI
+
+Her kategori için tabloyu referans al. Transkript içinde satış temsilcisi bu bilgiyi SORMUŞ veya MÜŞTERİDEN ALMIŞSA "EVET" say ve ilgili puanı ver. Hiç geçmediyse veya eksikse "HAYIR" (0 puan) ver.
+
+---
+
+### DEĞERLENDİRME TABLOSU
+
+| Kategori | Öğrenilmesi Gereken Bilgi / Soru Tipi | Puan (Evet) |
+|----------|---------------------------------------|-------------|
+| **Firma Künyesi** | Firma unvan teyidi yapıldı mı? | 2 |
+| **Firma Künyesi** | Vergi numarası soruldu mu? | 2 |
+| **Firma Künyesi** | Teklif mail adresi öğrenildi mi? | 2 |
+| **Firma Analizi** | İşe alım süreçlerini kimin yönettiği öğrenildi mi? | 4 |
+| **Firma Analizi** | Firmanın İK departmanı olup olmadığı soruldu mu? | 4 |
+| **Firma Analizi** | Çalışan sayısı öğrenildi mi? | 4 |
+| **Firma Analizi** | Kritik pozisyonlar soruldu mu? | 4 |
+| **Firma Analizi** | İşe alım sıklığı öğrenildi mi? | 4 |
+| **İhtiyaç Analizi** | Zorluklar öğrenildi mi? | 5 |
+| **İhtiyaç Analizi** | Önceki deneyimler soruldu mu? | 5 |
+| **İhtiyaç Analizi** | İşe alım kanalları soruldu mu? | 4 |
+| **İhtiyaç Analizi** | Mülakat süreçleri soruldu mu? | 3 |
+| **İhtiyaç Analizi** | Yetkinlik testleri soruldu mu? | 3 |
+| **İhtiyaç Analizi** | Beklentiler & öncelikler öğrenildi mi? | 5 |
+| **İhtiyaç Analizi** | Evrak doğrulama süreci soruldu mu? | 3 |
+| **İtiraz Karşılama** | Firma itirazı karşılandı mı? | 10 |
+| **Ürün Önerisi** | Uygun ilan ürünü önerisi yapıldı mı? | 6 |
+
+---
+
+### ÇIKTI FORMATIN
+
+TOPLAM PUAN: XX / 100
+
+DETAYLI PUANLAMA:
+
+**1. Firma Künyesi (6 Puan Üstü)**
+* Firma Unvan Teyidi: EVET (2) / HAYIR (0)
+* Vergi No Soruldu: EVET (2) / HAYIR (0)
+* Teklif Maili Alındı: EVET (2) / HAYIR (0)
+➡ Alt Toplam: X/6
+
+**2. Firma Analizi (16 Puan Üstü)**
+* İşe alım süreç yönetimi öğrenildi: EVET (4) / HAYIR (0)
+* İK departmanı varlığı soruldu: EVET (4) / HAYIR (0)
+* Çalışan sayısı öğrenildi: EVET (4) / HAYIR (0)
+* Kritik pozisyonlar soruldu: EVET (4) / HAYIR (0)
+* İşe alım sıklığı öğrenildi: EVET (4) / HAYIR (0)
+➡ Alt Toplam: X/16
+
+**3. İhtiyaç Analizi (23 Puan Üstü)**
+* Zorluklar öğrenildi: EVET (5) / HAYIR (0)
+* Önceki deneyimler soruldu: EVET (5) / HAYIR (0)
+* İşe alım kanalları soruldu: EVET (4) / HAYIR (0)
+* Mülakat süreçleri soruldu: EVET (3) / HAYIR (0)
+* Yetkinlik testleri soruldu: EVET (3) / HAYIR (0)
+* Beklentiler & öncelikler öğrenildi: EVET (5) / HAYIR (0)
+* Evrak doğrulama süreci soruldu: EVET (3) / HAYIR (0)
+➡ Alt Toplam: X/23
+
+**4. İtiraz Karşılama (10 Puan)**
+* Firma itirazı karşılandı: EVET (10) / HAYIR (0)
+➡ Alt Toplam: X/10
+
+**5. Ürün Önerisi (6 Puan)**
+* Uygun ilan ürünü önerisi yapıldı: EVET (6) / HAYIR (0)
+➡ Alt Toplam: X/6
+
+---
+
+### GENEL YORUM:
+
+**Güçlü Alanlar:**
+* [Başarıyla tamamlanan kategoriler ve dikkat çeken noktalar]
+
+**Geliştirilmesi Gereken Alanlar:**
+* [Eksik kalan veya geliştirilmesi gereken kategoriler]
+
+**Eğitmen Tavsiyesi:**
+* [Kısa, aksiyon odaklı öneri - max 2-3 cümle]
+
+---
+
+### EK KURALLAR
+
+- Transkriptte farklı kelimelerle geçse bile anlam aynıysa "EVET" say. Örnek: "Vergi numaranız" yerine "resmi kayıt numaranız" da sayılır.
+- Eğer şüpheliysen, "HAYIR" olarak değerlendir ve yoruma not düş.
+- Satış temsilcisinin sorup müşterinin cevaplamadığı durumlarda da "EVET" sayılır (çünkü amaç soru sormasıdır).`
     }
 ];
 

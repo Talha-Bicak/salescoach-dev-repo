@@ -266,6 +266,22 @@
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
+      // Temporary client-side test logins without server validation
+      if (email === 'denemeIKCO@gmail.com' && password === 'deneme') {
+        const user = { id: 'test-ikco', email, name: 'Deneme IKCO', role: 'IKCO' };
+        localStorage.setItem('token', 'test-token');
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/dashboard.html';
+        return;
+      }
+      if (email === 'denemelead@gmail.com' && password === 'deneme') {
+        const user = { id: 'test-lead', email, name: 'Deneme Lead', role: 'TEAM_LEAD' };
+        localStorage.setItem('token', 'test-token');
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/team-dashboard.html';
+        return;
+      }
+
       try {
         const response = await fetch(`${API_URL}/api/auth/login`, {
           method: 'POST',

@@ -83,6 +83,30 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Temporary hardcoded test login for development
+    if (email === 'deneme@gmail.com' && password === 'deneme') {
+      let user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user = await prisma.user.create({
+          data: {
+            email,
+            password: hashedPassword,
+            name: 'Deneme Kullanıcı',
+            role: 'IKCO'
+          }
+        });
+      }
+
+      const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+      res.cookie('token', token, { httpOnly: true });
+
+      return res.json({
+        user: { id: user.id, email: user.email, name: user.name, role: user.role },
+        token
+      });
+    }
+
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });

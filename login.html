@@ -95,6 +95,18 @@
         </div>
       </div>
 
+      <!-- Tab Buttons -->
+      <div class="flex mb-8 bg-gray-100 rounded-xl p-1.5">
+        <button onclick="switchTab('login')" id="login-tab" 
+                class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 bg-white text-purple-600 shadow-md">
+          Giriş Yap
+        </button>
+        <button onclick="switchTab('register')" id="register-tab" 
+                class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 text-gray-600 hover:text-gray-800">
+          Kayıt Ol
+        </button>
+      </div>
+
       <!-- Login Form -->
       <form id="login-form" class="space-y-5">
         <div class="space-y-5">
@@ -126,15 +138,15 @@
             </div>
           </div>
         </div>
-        
-        <button type="submit" 
-                class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-          </svg>
-          Giriş Yap
-        </button>
       </form>
+
+      <button type="submit" form="login-form"
+              class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+        Giriş Yap
+      </button>
 
       <!-- Register Form -->
       <form id="register-form" class="hidden space-y-4">
@@ -202,27 +214,15 @@
             </div>
           </div>
         </div>
-        
-        <button type="submit" 
-                class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-          </svg>
-          Hesap Oluştur
-        </button>
       </form>
 
-      <!-- Tab Buttons -->
-      <div class="flex mt-8 bg-gray-100 rounded-xl p-1.5">
-        <button onclick="switchTab('login')" id="login-tab" 
-                class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 bg-white text-purple-600 shadow-md">
-          Giriş Yap
-        </button>
-        <button onclick="switchTab('register')" id="register-tab" 
-                class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 text-gray-600 hover:text-gray-800">
-          Kayıt Ol
-        </button>
-      </div>
+      <button type="submit" form="register-form"
+              class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+        </svg>
+        Hesap Oluştur
+      </button>
 
       <!-- User Data Storage Info -->
       <div class="mt-6 text-center text-sm text-gray-500">

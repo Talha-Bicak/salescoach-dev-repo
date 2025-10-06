@@ -41,6 +41,10 @@ externalPort = 80
 localPort = 34817
 externalPort = 3001
 
+[[ports]]
+localPort = 36129
+externalPort = 3002
+
 [deployment]
 deploymentTarget = "vm"
 run = ["bash", "-c", "JWT_SECRET=${JWT_SECRET} npm run dev"]

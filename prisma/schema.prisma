@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -39,7 +39,7 @@ model Transcript {
   sessionId  String
   session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   speaker    String
-  text       String
+  text       String   @db.NVarChar(Max)
   timestamp  DateTime @default(now())
 
   @@index([sessionId])
@@ -51,7 +51,7 @@ model Evaluation {
   session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-  result    String
+  result    String   @db.NVarChar(Max)
   score     Float?
   createdAt DateTime @default(now())
 

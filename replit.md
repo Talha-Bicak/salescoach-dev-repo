@@ -31,7 +31,55 @@ This is a comprehensive sales training platform using Azure OpenAI's Realtime AP
 - **Transcripts**: Speaker-based conversation transcripts
 - **Evaluations**: AI-generated performance evaluations with scores
 
-## Recent Changes (October 2, 2025)
+## Recent Changes (October 6, 2025)
+### Database Migration to MSSQL
+- **Migrated from SQLite to Microsoft SQL Server**
+  - Updated Prisma schema for SQL Server with proper data types
+  - Created Docker Compose configuration for local MSSQL testing
+  - Added comprehensive MSSQL_MIGRATION_GUIDE.md with step-by-step instructions
+  - Connection string configured for MSSQL (port 1433, SA user)
+  - Long text fields now use @db.NVarChar(Max) for Turkish character support
+
+### UI/UX Improvements
+- **Login/Registration Page (login.html)**
+  - Increased input field sizes for better usability (py-4 instead of py-3)
+  - Improved form symmetry with consistent spacing (mb-3, space-y-6)
+  - Larger buttons with better visual hierarchy (py-4, text-lg)
+  - Widened form container (max-w-xl) for better desktop experience
+  
+- **Dashboard Pages (dashboard.html, team-dashboard.html)**
+  - Added custom gradient scrollbars matching the design theme
+  - Implemented scrolling with max-height constraints (600px, 500px)
+  - Smooth scrolling behavior for better UX
+  - Team dashboard now uses modern gradient navigation (matching other pages)
+  - Enhanced navigation bar with backdrop blur and improved iconography
+  
+- **Templates Page (templates.html)**
+  - Added animated arrow icons on card hover (rotating arrow in circle)
+  - Enhanced card hover effects with increased elevation and border glow
+  - Improved typography with bullet points and star icons on badges
+  - Added hover effects to category titles with transform animations
+  - Enhanced back button with directional animation
+  - Larger title with decorative underline
+  
+- **Conversation Page (index.html)**
+  - Updated navigation to match modern gradient design across all pages
+  - Added user avatar icon and improved header spacing
+  - Consistent backdrop blur effects and white/purple color scheme
+
+### Scoring System Analysis
+- **Comprehensive evaluation of current scoring mechanism**
+  - Identified regex-based score extraction issues
+  - Documented problems with simple averaging approach
+  - Provided detailed improvement recommendations:
+    1. Structured JSON output from Azure OpenAI
+    2. Weighted average calculations
+    3. Template-specific evaluation criteria
+    4. Confidence level tracking
+    5. Performance trend analysis
+    6. Database schema enhancements for detailed scoring
+
+## Previous Changes (October 2, 2025)
 - **Transformed into sales training platform** with full authentication system
 - **Created backend API** with Express + Prisma for session/transcript management
 - **Implemented customer profile** from CSV (Sağlam İnşaat Taahhüt LTD)
@@ -62,6 +110,22 @@ This is a comprehensive sales training platform using Azure OpenAI's Realtime AP
 
 ## Development
 
+### Database Options
+
+#### Option 1: SQLite (Current - Simple, No Setup Required)
+The application currently uses SQLite and is fully configured:
+1. Dependencies are already installed
+2. Prisma client is generated automatically
+3. Database file: `prisma/dev.db`
+4. No additional setup required
+
+#### Option 2: MSSQL (Recommended for Production)
+For production or enterprise deployments, migrate to MSSQL:
+1. **Local Testing**: Use Docker Compose (see `MSSQL_MIGRATION_GUIDE.md`)
+2. **Cloud Deployment**: Azure SQL Database or AWS RDS
+3. **Migration Steps**: Detailed in `MSSQL_MIGRATION_GUIDE.md`
+4. **Benefits**: Better performance, scalability, enterprise features
+
 ### On Replit
 The application is fully configured and ready to run on Replit:
 1. Dependencies are already installed
@@ -85,6 +149,22 @@ The application is fully configured and ready to run on Replit:
    - Frontend runs on http://localhost:5000
 
 **Note**: JWT_SECRET is REQUIRED. The backend will fail to start without it. Use a strong, random secret in production.
+
+### MSSQL Migration
+To migrate to MSSQL, follow the comprehensive guide: `MSSQL_MIGRATION_GUIDE.md`
+
+Quick start:
+```bash
+# Start MSSQL with Docker
+docker-compose up -d
+
+# Update .env with MSSQL connection string
+# Run Prisma migrations
+npx prisma migrate dev --name init_mssql
+
+# Start the app
+npm run dev
+```
 
 ### Azure OpenAI Configuration
 To use the real-time voice features, you need to configure Azure OpenAI credentials:

@@ -31,30 +31,34 @@
     }
   </script>
   
-  <nav class="gradient-bg shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-20">
+  <nav class="gradient-bg shadow-2xl border-b border-white/10">
+    <div class="max-w-full px-6">
+      <div class="flex justify-between items-center h-16">
         <div class="flex items-center space-x-4">
-          <a href="javascript:history.back()" class="text-white hover:text-purple-100 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a href="/dashboard.html" class="text-white/80 hover:text-white transition-all hover:scale-110 p-2 rounded-lg hover:bg-white/10" title="Dashboard'a Dön">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
           </a>
           <div class="flex items-center space-x-3">
-            <div class="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/20">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
               </svg>
             </div>
-            <h1 class="text-2xl font-bold text-white">Satış Görüşmesi</h1>
+            <div>
+              <h1 class="text-xl font-bold text-white">Satış Görüşmesi</h1>
+              <p class="text-xs text-white/60">AI ile Pratik Yap</p>
+            </div>
           </div>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
-            <span class="text-white font-semibold" id="nav-user-name"></span>
+            <span class="text-white font-medium text-sm" id="nav-user-name"></span>
           </div>
         </div>
       </div>
@@ -72,14 +76,14 @@
         <div class="visualization-panel">
           <div class="visualizer-container">
             <label>Voice Activity</label>
-            <canvas id="audio-visualizer" width="300" height="120"></canvas> <!-- Yükseklik ayarlandı -->
-            <div id="audio-status" class="status-indicator off">Inactive</div>
+            <canvas id="audio-visualizer" width="300" height="120"></canvas>
+            <div id="audio-status" class="status-indicator off" title="Audio Status"></div>
           </div>
 
           <div class="camera-container">
             <label>Camera</label>
             <video id="user-camera" autoplay muted playsinline></video>
-            <div id="camera-status" class="status-indicator off">Inactive</div>
+            <div id="camera-status" class="status-indicator off" title="Camera Status"></div>
           </div>
         </div>
 

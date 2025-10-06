@@ -89,6 +89,28 @@ if (voice && configMessage.session) configMessage.session.voice = voice;
 return configMessage;
 }
 
+// Histogram güncelleme fonksiyonu
+function updateHistogram(pcmData: Int16Array) {
+    const bars = document.querySelectorAll('.audio-histogram .bar') as NodeListOf<HTMLElement>;
+    if (bars.length === 0) return;
+    
+    // PCM verisinden ses seviyesini hesapla
+    let sum = 0;
+    for (let i = 0; i < pcmData.length; i++) {
+        sum += Math.abs(pcmData[i]);
+    }
+    const average = sum / pcmData.length;
+    const intensity = Math.min(average / 3000, 1); // 0-1 arası normalize et
+    
+    // Her bara farklı yükseklik ver
+    bars.forEach((bar) => {
+        const randomVariation = 0.7 + (Math.random() * 0.6); // 0.7-1.3 arası
+        const height = 20 + (intensity * 60 * randomVariation); // 20-80px arası
+        bar.style.height = `${height}px`;
+        bar.style.opacity = `${0.7 + intensity * 0.3}`;
+    });
+}
+
 // --- Minimal Değişiklik: handleRealtimeMessages ---
 // Konuşmacıların ayrıştırılmasını kolaylaştırmak için küçük düzenlemeler yapıldı.
 async function handleRealtimeMessages() {
@@ -102,6 +124,12 @@ switch (message.type) {
         setFormInputState(InputState.ReadyToStop);
         makeNewTextBlock("<< Session Started >>").setAttribute('data-sender', 'system');
         currentSpeakerBlock = null;
+        
+        // Durum yazısını güncelle
+        const callStatus = document.querySelector('.call-status') as HTMLElement;
+        if (callStatus) {
+            callStatus.textContent = 'Görüşme Başladı';
+        }
         break;
 
     case "response.audio_transcript.delta":
@@ -123,6 +151,15 @@ switch (message.type) {
         if(bytes.length > 0 && audioPlayer) {
             const pcmData = new Int16Array(bytes.buffer);
             audioPlayer.play(pcmData);
+            
+            // Histogram barlarını dinamik olarak güncelle
+            updateHistogram(pcmData);
+            
+            // Durum yazısını güncelle
+            const callStatus = document.querySelector('.call-status') as HTMLElement;
+            if (callStatus) {
+                callStatus.textContent = 'AI Konuşuyor...';
+            }
         }
         break;
 
@@ -133,6 +170,12 @@ switch (message.type) {
             latestInputSpeechBlock = makeNewTextBlock("User: "); 
             latestInputSpeechBlock.setAttribute('data-sender', 'user');
             if (audioPlayer) audioPlayer.clear();
+            
+            // Durum yazısını güncelle
+            const callStatusUser = document.querySelector('.call-status') as HTMLElement;
+            if (callStatusUser) {
+                callStatusUser.textContent = 'Siz Konuşuyorsunuz...';
+            }
             
             // Animasyon için: transcript gizliyse ringBox'ı göster
             const ringBox = document.querySelector('#ringBox') as HTMLElement;
@@ -386,10 +429,17 @@ try {
     formReceivedTextContainer.innerHTML = `
         <div id="ringBox">
             <div class="ring-content">
-                <div class="wave"></div>
-                <div class="wave" style="animation-delay: 0.6s"></div>
-                <div class="wave" style="animation-delay: 1.2s"></div>
-                <div class="call-status">Ringing...</div>
+                <div class="audio-histogram">
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                </div>
+                <div class="call-status">Bağlanıyor...</div>
                 <div class="loader" style="display: none;">Sending message...</div>
             </div>
         </div>

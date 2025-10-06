@@ -32,9 +32,23 @@
       transform: translateY(-5px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 8px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen overflow-y-auto scrollbar-custom">
   <!-- Modern Navigation -->
   <nav class="gradient-bg shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -160,7 +174,7 @@
           Görüşme Geçmişi
         </h3>
       </div>
-      <div id="sessions-list" class="space-y-4">
+      <div id="sessions-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 scroll-smooth">
         <p class="text-gray-500">Yükleniyor...</p>
       </div>
     </div>

@@ -140,13 +140,7 @@
         </div>
       </form>
 
-      <button type="submit" form="login-form"
-              class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-        </svg>
-        Giriş Yap
-      </button>
+      
 
       <!-- Register Form -->
       <form id="register-form" class="hidden space-y-4">
@@ -216,12 +210,20 @@
         </div>
       </form>
 
-      <button type="submit" form="register-form"
-              class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+      <button id="register-submit-btn" type="submit" form="register-form"
+              class="hidden w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
         </svg>
         Hesap Oluştur
+      </button>
+
+      <button id="login-submit-btn" type="submit" form="login-form"
+              class="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+        Giriş Yap
       </button>
 
       <!-- User Data Storage Info -->
@@ -239,6 +241,8 @@
       const registerForm = document.getElementById('register-form');
       const loginTab = document.getElementById('login-tab');
       const registerTab = document.getElementById('register-tab');
+      const loginSubmitBtn = document.getElementById('login-submit-btn');
+      const registerSubmitBtn = document.getElementById('register-submit-btn');
 
       if (tab === 'login') {
         loginForm.classList.remove('hidden');
@@ -247,6 +251,9 @@
         loginTab.classList.remove('text-gray-600', 'hover:text-gray-800');
         registerTab.classList.remove('bg-white', 'text-purple-600', 'shadow-md');
         registerTab.classList.add('text-gray-600', 'hover:text-gray-800');
+        // Show only login submit button
+        loginSubmitBtn.classList.remove('hidden');
+        registerSubmitBtn.classList.add('hidden');
       } else {
         loginForm.classList.add('hidden');
         registerForm.classList.remove('hidden');
@@ -254,6 +261,9 @@
         registerTab.classList.remove('text-gray-600', 'hover:text-gray-800');
         loginTab.classList.remove('bg-white', 'text-purple-600', 'shadow-md');
         loginTab.classList.add('text-gray-600', 'hover:text-gray-800');
+        // Show only register submit button
+        registerSubmitBtn.classList.remove('hidden');
+        loginSubmitBtn.classList.add('hidden');
       }
     }
 

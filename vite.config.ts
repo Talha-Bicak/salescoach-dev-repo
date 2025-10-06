@@ -7,7 +7,7 @@ export default defineConfig({
     strictPort: true,
   },
   preview: {
-    host: "d904a810-2b30-423c-9b79-e75c36e9e944-00-30qhxq7z7s7tx.picard.replit.dev",
+    host: "80aaa357-4095-4679-964e-f31d4050830d-00-347jev6wyyes6.spock.replit.dev",
     port: 5000,
     strictPort: true,
   },

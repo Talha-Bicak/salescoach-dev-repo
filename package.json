@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsx server/index.ts\" \"vite --host\"",
+    "dev": "vite --host",
     "backend": "tsx server/index.ts",
     "frontend": "vite --host",
     "build": "tsc && vite build",

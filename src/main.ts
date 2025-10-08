@@ -300,7 +300,7 @@ if (startRecording) {
     // Kayıt durduğunda görselleştirmeyi de durdur
     if (document.querySelector("#voice-activity-button")) {
         stopVisualization();
-        updateAudioStatus('off', 'Inactive');
+        updateAudioStatus('off');
     }
     
     // Kayıt durduğunda ringBox'ı gizle
@@ -315,11 +315,11 @@ setFormInputState(InputState.ReadyToStart); // Başlatma başarısız olursa sta
 }
 
 // Audio visualization functions (Orijinal kod)
-function setupAudioVisualization(stream: MediaStream) { try { if (!audioContext || audioContext.state === 'closed') audioContext = new AudioContext(); if (audioContext.state === 'suspended') audioContext.resume().catch(console.error); analyser = audioContext.createAnalyser(); analyser.fftSize = 256; const source = audioContext.createMediaStreamSource(stream); source.connect(analyser); updateAudioStatus('active', 'Active'); startVisualization(); console.log("Audio visualization setup complete"); } catch (error) { console.error("Error setting up audio visualization:", error); updateAudioStatus('error', 'Error'); } }
-function startVisualization() { if (!analyser || !audioContext || audioContext.state !== 'running') { console.warn("Cannot start visualization - analyzer or context not ready"); return; } if (animationFrameId) cancelAnimationFrame(animationFrameId); const bufferLength = analyser.frequencyBinCount; const dataArray = new Uint8Array(bufferLength); function draw() { if (!analyser) { if (animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null; clearVisualizer(); return; } animationFrameId = requestAnimationFrame(draw); const WIDTH = audioVisualizerCanvas.width; const HEIGHT = audioVisualizerCanvas.height; if (VIZ_TYPE === 'frequency') { analyser.getByteFrequencyData(dataArray); audioVisCtx.fillStyle = 'rgb(44, 62, 80)'; audioVisCtx.fillRect(0, 0, WIDTH, HEIGHT); const barWidth = (WIDTH / bufferLength) * 1.5; let x = 0; audioVisCtx.fillStyle = 'rgb(46, 204, 113)'; for (let i = 0; i < bufferLength; i++) { const barHeight = dataArray[i] * (HEIGHT / 256); audioVisCtx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight); x += barWidth + 1; } const maxLevel = Math.max(...dataArray); if (maxLevel > 50 && recordingActive) updateAudioStatus('speaking', 'Speaking'); else if (recordingActive) updateAudioStatus('listening', 'Listening'); else updateAudioStatus('active', 'Active'); } else { analyser.getByteTimeDomainData(dataArray); audioVisCtx.fillStyle = 'rgb(44, 62, 80)'; audioVisCtx.fillRect(0, 0, WIDTH, HEIGHT); audioVisCtx.strokeStyle = 'rgb(46, 204, 113)'; audioVisCtx.lineWidth = 2; audioVisCtx.beginPath(); const sliceWidth = WIDTH / bufferLength; let x = 0; for (let i = 0; i < bufferLength; i++) { const v = dataArray[i] / 128.0; const y = v * HEIGHT / 2; if (i === 0) audioVisCtx.moveTo(x, y); else audioVisCtx.lineTo(x, y); x += sliceWidth; } audioVisCtx.lineTo(WIDTH, HEIGHT / 2); audioVisCtx.stroke(); } } draw(); }
+function setupAudioVisualization(stream: MediaStream) { try { if (!audioContext || audioContext.state === 'closed') audioContext = new AudioContext(); if (audioContext.state === 'suspended') audioContext.resume().catch(console.error); analyser = audioContext.createAnalyser(); analyser.fftSize = 256; const source = audioContext.createMediaStreamSource(stream); source.connect(analyser); updateAudioStatus('active'); startVisualization(); console.log("Audio visualization setup complete"); } catch (error) { console.error("Error setting up audio visualization:", error); updateAudioStatus('error'); } }
+function startVisualization() { if (!analyser || !audioContext || audioContext.state !== 'running') { console.warn("Cannot start visualization - analyzer or context not ready"); return; } if (animationFrameId) cancelAnimationFrame(animationFrameId); const bufferLength = analyser.frequencyBinCount; const dataArray = new Uint8Array(bufferLength); function draw() { if (!analyser) { if (animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null; clearVisualizer(); return; } animationFrameId = requestAnimationFrame(draw); const WIDTH = audioVisualizerCanvas.width; const HEIGHT = audioVisualizerCanvas.height; if (VIZ_TYPE === 'frequency') { analyser.getByteFrequencyData(dataArray); audioVisCtx.fillStyle = 'rgb(44, 62, 80)'; audioVisCtx.fillRect(0, 0, WIDTH, HEIGHT); const barWidth = (WIDTH / bufferLength) * 1.5; let x = 0; audioVisCtx.fillStyle = 'rgb(46, 204, 113)'; for (let i = 0; i < bufferLength; i++) { const barHeight = dataArray[i] * (HEIGHT / 256); audioVisCtx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight); x += barWidth + 1; } const maxLevel = Math.max(...dataArray); if (maxLevel > 50 && recordingActive) updateAudioStatus('speaking'); else if (recordingActive) updateAudioStatus('listening'); else updateAudioStatus('active'); } else { analyser.getByteTimeDomainData(dataArray); audioVisCtx.fillStyle = 'rgb(44, 62, 80)'; audioVisCtx.fillRect(0, 0, WIDTH, HEIGHT); audioVisCtx.strokeStyle = 'rgb(46, 204, 113)'; audioVisCtx.lineWidth = 2; audioVisCtx.beginPath(); const sliceWidth = WIDTH / bufferLength; let x = 0; for (let i = 0; i < bufferLength; i++) { const v = dataArray[i] / 128.0; const y = v * HEIGHT / 2; if (i === 0) audioVisCtx.moveTo(x, y); else audioVisCtx.lineTo(x, y); x += sliceWidth; } audioVisCtx.lineTo(WIDTH, HEIGHT / 2); audioVisCtx.stroke(); } } draw(); }
 function stopVisualization() { if (animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null; clearVisualizer(); }
 function clearVisualizer() { if (audioVisCtx && audioVisualizerCanvas) { audioVisCtx.fillStyle = 'rgb(44, 62, 80)'; audioVisCtx.fillRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height); } }
-function updateAudioStatus(statusClass: string, statusText: string) { if(audioStatusDiv) { audioStatusDiv.className = `status-indicator ${statusClass}`; audioStatusDiv.textContent = statusText; } }
+function updateAudioStatus(statusClass: string) { if(audioStatusDiv) { audioStatusDiv.className = `status-indicator ${statusClass}`; } }
 
 // --- UI ve Kontroller (Orijinal Kod) ---
 const formReceivedTextContainer = document.querySelector<HTMLDivElement>("#received-text-container")!;
@@ -492,7 +492,7 @@ formEndpointField.addEventListener('change', guessIfIsAzureOpenAI); // Listener 
 window.addEventListener("DOMContentLoaded", () => {
     formControlsPanel.classList.remove("visible");
     clearVisualizer();
-    updateAudioStatus('off', 'Inactive');
+    updateAudioStatus('off');
     
     // RingBox elementini başlangıçta gizle
     const ringBox = document.querySelector('#ringBox') as HTMLElement;
@@ -593,7 +593,7 @@ selectTemplateButton.addEventListener("click", () => {
     window.location.href = 'templates.html';
 });
 
-async function toggleVoiceActivity() { /* Orijinal kod */ try { if (!audioContext || audioContext.state === 'closed') { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); setupAudioVisualization(stream); voiceActivityButton.textContent = 'Stop Voice Activity'; } else { if (audioContext) await audioContext.close(); stopVisualization(); updateAudioStatus('off', 'Inactive'); voiceActivityButton.textContent = 'Start Voice Activity'; } } catch (error) { console.error('Error accessing microphone:', error); updateAudioStatus('error', 'Error'); } }
+async function toggleVoiceActivity() { /* Orijinal kod */ try { if (!audioContext || audioContext.state === 'closed') { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); setupAudioVisualization(stream); voiceActivityButton.textContent = 'Stop Voice Activity'; } else { if (audioContext) await audioContext.close(); stopVisualization(); updateAudioStatus('off'); voiceActivityButton.textContent = 'Start Voice Activity'; } } catch (error) { console.error('Error accessing microphone:', error); updateAudioStatus('error'); } }
 voiceActivityButton.addEventListener("click", toggleVoiceActivity);
 
 // toggleTranscript fonksiyonunu güncelle:
@@ -616,7 +616,7 @@ function toggleTranscript() {
 
 transcriptToggleButton.addEventListener("click", toggleTranscript);
 
-async function toggleCamera() { /* Orijinal kod (hata mesajı güncellendi) */ if (cameraStream) { cameraStream.getTracks().forEach(track => track.stop()); userCameraVideo.srcObject = null; cameraStatusDiv.className = 'status-indicator off'; cameraStatusDiv.textContent = 'Inactive'; cameraButton.textContent = 'Open Camera'; cameraStream = null; } else { try { cameraStream = await navigator.mediaDevices.getUserMedia({ video: true }); userCameraVideo.srcObject = cameraStream; cameraStatusDiv.className = 'status-indicator active'; cameraStatusDiv.textContent = 'Active'; cameraButton.textContent = 'Close Camera'; } catch (err) { console.error("Error accessing camera:", err); cameraStatusDiv.className = 'status-indicator error'; cameraStatusDiv.textContent = 'Error'; makeNewTextBlock("[Camera Error]: Failed to access camera."); cameraStream = null; } } }
+async function toggleCamera() { /* Orijinal kod (hata mesajı güncellendi) */ if (cameraStream) { cameraStream.getTracks().forEach(track => track.stop()); userCameraVideo.srcObject = null; cameraStatusDiv.className = 'status-indicator off'; cameraButton.textContent = 'Open Camera'; cameraStream = null; } else { try { cameraStream = await navigator.mediaDevices.getUserMedia({ video: true }); userCameraVideo.srcObject = cameraStream; cameraStatusDiv.className = 'status-indicator active'; cameraButton.textContent = 'Close Camera'; } catch (err) { console.error("Error accessing camera:", err); cameraStatusDiv.className = 'status-indicator error'; makeNewTextBlock("[Camera Error]: Failed to access camera."); cameraStream = null; } } }
 cameraButton.addEventListener("click", toggleCamera);
 
 // --- DEĞİŞTİRİLDİ: Değerlendirme Fonksiyonları ve Listener'lar (Azure OpenAI KULLANARAK) ---
